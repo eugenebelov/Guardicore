@@ -1,0 +1,5 @@
+<div *ngFor='let v of polyVetexes; index as i'>
+  ( <div contenteditable="true" (blur)='editX($event, i)' numbersOnly>{{ v.x }}</div> 
+  <span> | </span>
+  <div contenteditable="true" (blur)='editY($event, i)' numbersOnly>{{v.y}}</div> )
+</div>

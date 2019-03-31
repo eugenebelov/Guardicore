@@ -1,0 +1,11 @@
+:host {
+    display: flex;
+    padding: 10px;
+    border: 1px dashed;
+    margin-right: 15px;
+
+    > div {
+        display: flex;
+        margin-right: 10px;
+    }
+}

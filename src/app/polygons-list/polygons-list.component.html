@@ -1,0 +1,8 @@
+<div>
+  <h5>Polygons: </h5>
+  <input type="button" (click)="resetPolyList($event)" value="Reset"/>
+</div>
+<ul>
+  <polygon-item *ngFor="let v of (data$ | async)?.polygons" 
+                [polygonData]="v"></polygon-item>
+</ul>
