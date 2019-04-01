@@ -2,7 +2,7 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.
 
-Before start, be sure that you have nodejs > 8 and npm > 5
+IMPORTANT: Before start, be sure that you have nodejs > 8 and npm > 5
 
 Ok, to get this very fancy-looking drawing board you need to do the following:
 1. open your teminal/cmd/whatever and paste 
