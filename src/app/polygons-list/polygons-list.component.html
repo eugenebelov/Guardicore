@@ -1,8 +1,11 @@
-<div>
-  <h5>Polygons: </h5>
-  <input type="button" (click)="resetPolyList($event)" value="Reset"/>
+<h3>Polygons List</h3>
+<div class="test-wrapper">
+  <div>
+    <h5>Polygons: </h5>
+    <input type="button" (click)="resetPolyList($event)" value="Reset"/>
+  </div>
+  <ul>
+    <polygon-item *ngFor="let v of (data$ | async)?.polygons" 
+                  [polygonData]="v"></polygon-item>
+  </ul>
 </div>
-<ul>
-  <polygon-item *ngFor="let v of (data$ | async)?.polygons" 
-                [polygonData]="v"></polygon-item>
-</ul>
