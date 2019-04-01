@@ -19,6 +19,8 @@ export class PolygonMakerComponent implements OnInit {
   @ViewChild('canvas') canvas: ElementRef;
 
   private cx: CanvasRenderingContext2D;
+  private polygon: Array<any> = [];
+  private polygonReady: boolean = false;
 
   ngOnInit() {
   }
@@ -36,19 +38,57 @@ export class PolygonMakerComponent implements OnInit {
     this.cx.lineWidth = 3;
     this.cx.lineCap = 'round';
     this.cx.strokeStyle = '#000';
+    this.cx.fillStyle = '#00aacc';
 
     const eve$ = fromEvent(this.canvas.nativeElement, 'click');
 
     eve$.pipe(
       pairwise()
     ).subscribe( ([start, end]: [MouseEvent, MouseEvent]) => {
-      // store start/end coords from line
-      // every time check if last entered coord is nearby of first
-      // if so - connect 1st and last
-      // reset storage and start again
+      if (!this.polygonReady) {
+        this.polygon.push({x: start.layerX, y:start.layerY}, {x:end.layerX, y:end.layerY});
 
-      // this.drawOnCanvas({x: start.layerX, y:start.layerY}, {x:end.layerX, y:end.layerY});
+        if (this.polygon.length) {
+          const firstPoint = this.polygon[0];
+          const lastPoint = this.polygon[this.polygon.length - 1];
+
+          if (this.isPointClose(firstPoint, lastPoint)) {
+            this.drawOnCanvas({x: start.layerX, y:start.layerY}, {x:firstPoint.x, y:firstPoint.y});
+            this.fillPoly();
+            this.addPoly();
+            this.polygonReady = true;
+            this.polygon.length = 0;
+          } else {
+            this.drawOnCanvas({x: start.layerX, y:start.layerY}, {x:end.layerX, y:end.layerY});
+          }
+        }
+      } else {
+        this.polygonReady = false;
+      }
     })
+  }
+
+  private fillPoly() {
+    const shape = this.polygon.slice(0);
+    let curCoord = shape.shift();
+    this.cx.beginPath();
+    this.cx.moveTo(curCoord.x, curCoord.y);
+    while(shape.length) {
+      curCoord = shape.shift();
+      this.cx.lineTo(curCoord.x, curCoord.y);
+    }
+    this.cx.closePath();
+    this.cx.fill();
+  }
+
+  private isPointClose(pointSource, pointTarget, offset = 20): boolean {
+    // (X - Xo)^2 + (Y - Yo)^2 < R^2
+
+    const R = Math.pow(offset, 2);
+    const X = Math.pow((pointTarget.x - pointSource.x), 2);
+    const Y = Math.pow((pointTarget.y - pointSource.y), 2);
+
+    return (X + Y < R);
   }
 
   private drawOnCanvas(
@@ -76,14 +116,7 @@ export class PolygonMakerComponent implements OnInit {
   }
 
   private addPoly(): void {
-    const vtx = this.vertexesInput.nativeElement.value.split(';');
-
-    const vertexes: Array<Vertex> = vtx.map( item => {
-      const v = item.split(',');
-      return { x: v[0], y: v[1] }
-    });
-
-    this.vertexesInput.nativeElement.value = '';
+    const vertexes: Array<Vertex> = [...this.polygon];
     this.store.dispatch(new Add({ polygon: { vertexes: vertexes } }));
   }
 
