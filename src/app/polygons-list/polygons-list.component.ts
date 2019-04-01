@@ -7,8 +7,7 @@ import { Reset } from '../store/actions';
 @Component({
   selector: 'polygons-list',
   templateUrl: './polygons-list.component.html',
-  styleUrls: ['./polygons-list.component.scss'],
-  host: {'class': 'test-wrapper'}
+  styleUrls: ['./polygons-list.component.scss']
 })
 export class PolygonsListComponent implements OnInit {
 
